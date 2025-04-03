@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Savings Tool</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="center-container">
+    <h2>Fuel Savings Tool</h2>
+
+    <form action="{% url 'calculate_fuel' %}" method="POST">
+        {% csrf_token %}
+    
+        <label>Put in the cost of unleaded per gallon:</label>
+        <input type="number" step="0.01" name="unleaded_cost" value="{{ unleaded_price|default:'' }}" required>
+    
+        <label>Put in the cost of diesel per gallon:</label>
+        <input type="number" step="0.01" name="diesel_cost" value="{{ diesel_price|default:'' }}" required>
+    
+        <label>Savings interval:</label>
+        <select name="interval">
+            <option value="monthly" {% if interval == 'monthly' %}selected{% endif %}>Monthly</option>
+            <option value="yearly" {% if interval == 'yearly' %}selected{% endif %}>Yearly</option>
+        </select>
+    
+        <label>Car1 Fuel Economy (mpg):</label>
+        <input type="number" step="0.1" name="fuel_economy1" value="{{ fuel_economy1|default:'' }}" required>
+    
+        <label>Car1 Fuel Type:</label>
+        <select name="fuel_type1">
+            <option value="unleaded" {% if fuel_type1 == 'unleaded' %}selected{% endif %}>Unleaded</option>
+            <option value="diesel" {% if fuel_type1 == 'diesel' %}selected{% endif %}>Diesel</option>
+        </select>
+    
+        <label>Car2 Fuel Economy (mpg):</label>
+        <input type="number" step="0.1" name="fuel_economy2" value="{{ fuel_economy2|default:'' }}" required>
+    
+        <label>Car2 Fuel Type:</label>
+        <select name="fuel_type2">
+            <option value="unleaded" {% if fuel_type2 == 'unleaded' %}selected{% endif %}>Unleaded</option>
+            <option value="diesel" {% if fuel_type2 == 'diesel' %}selected{% endif %}>Diesel</option>
+        </select>
+    
+        <label>Annual Mileage:</label>
+        <input type="number" name="annual_mileage" value="{{ annual_mileage|default:'' }}" required>
+    
+        <input type="submit" value="Calculate" class="submit">
+    </form>
+    
+    {% if fc1 is not None and fc2 is not None %}
+        <h3>Results:</h3>
+        <p>Annual Fuel Cost for Car 1: ${{ fc1|floatformat:2 }}</p>
+        <p>Annual Fuel Cost for Car 2: ${{ fc2|floatformat:2 }}</p>
+    {% endif %}
+    
+</body>
+</html>
